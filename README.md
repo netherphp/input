@@ -51,7 +51,7 @@ and in this example, will not affect the original $_POST['myfield'].
 You call the field as a method, passing it a callable function with one argument
 which is the value.
 
-	$input->MyField(function($text){
+	$input->MyField(function($t){
 		return str_repalce('a','@',$t);
 	});
 
