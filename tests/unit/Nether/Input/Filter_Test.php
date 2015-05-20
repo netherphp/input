@@ -16,14 +16,14 @@ class Filter_Test extends \Codeception\TestCase\Test {
 
 	static $TestDataBad = [
 		'Username' => 'bob!',
-		'email' => 'asdfjjdjdjdjd',
+		'Email' => 'asdfjjdjdjdjd',
 		'Hostname' => 'd@nkeyk@ng'
 	];
 
 	public function testConstruction() {
 
 		$boom = false;
-		try { $i = new Nether\Input\Filter([]); }
+		try { $i = new Nether\Input\Filter(['lol'=>'bbq']); }
 		catch(Exception $e) { $boom = true; }
 		(new Verify(
 			'construct handled array',
@@ -32,8 +32,8 @@ class Filter_Test extends \Codeception\TestCase\Test {
 
 		(new Verify(
 			'construct passed array in',
-			is_array($i->GetDataset())
-		))->true();
+			count($i->GetDataset())
+		))->equals(1);
 
 		$boom = false;
 		try { $i = new Nether\Input\Filter((object)[]); }
@@ -79,7 +79,7 @@ class Filter_Test extends \Codeception\TestCase\Test {
 
 		(new Verify(
 			'accessing a key as it was given works',
-			$input->username
+			$input->Username
 		))->equals('bob');
 
 		(new Verify(
