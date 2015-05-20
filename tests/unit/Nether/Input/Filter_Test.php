@@ -9,15 +9,15 @@ use \Exception;
 class Filter_Test extends \Codeception\TestCase\Test {
 
 	static $TestDataGood = [
-		'username' => 'bob',
-		'email' => 'bob@majdak.net',
-		'hostname' => 'donkeykong'
+		'Username' => 'bob',
+		'Email' => 'bob@majdak.net',
+		'Hostname' => 'donkeykong'
 	];
 
 	static $TestDataBad = [
-		'username' => 'bob!',
+		'Username' => 'bob!',
 		'email' => 'asdfjjdjdjdjd',
-		'hostname' => 'd@nkeyk@ng'
+		'Hostname' => 'd@nkeyk@ng'
 	];
 
 	public function testConstruction() {
@@ -29,6 +29,11 @@ class Filter_Test extends \Codeception\TestCase\Test {
 			'construct handled array',
 			$boom
 		))->false();
+
+		(new Verify(
+			'construct passed array in',
+			is_array($i->GetDataset())
+		))->true();
 
 		$boom = false;
 		try { $i = new Nether\Input\Filter((object)[]); }

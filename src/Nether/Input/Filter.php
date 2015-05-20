@@ -50,7 +50,7 @@ if you so choose.
 
 		$this->Case = $opt->Case;
 
-		if($dataset)
+		if($dataset !== null)
 		$this->SetDataset($dataset);
 
 		return;
@@ -124,6 +124,14 @@ if you so choose.
 		return array_key_exists($this->PrepareKey($k),$this->Dataset);
 	}
 
+	public function GetDataset() {
+	/*//
+	@return array
+	//*/
+
+		return $this->Dataset;
+	}
+
 	public function SetDataset($input) {
 	/*//
 	@argv array Input
@@ -132,7 +140,7 @@ if you so choose.
 	//*/
 
 		if(is_array($input) || is_object($input)) {
-			$this->Dataset = (array)$input;
+			$this->Dataset = $this->PrepareDataset((array)$input);
 		} else {
 			throw new Exception('Dataset must be an array or object.');
 		}
