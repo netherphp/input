@@ -5,7 +5,8 @@
 An input filtering interface. It allows you to define a set of dynamic filters
 for input to be run applied just-in-time on your specified data source.
 
-Super simple example:
+
+## Super simple example:
 
 	$input = (new Nether\Input\Filter)
 	->Email(function($t){ return filter_var($t,FILTER_VALIDATE_EMAIL); });
@@ -27,6 +28,23 @@ You can pass any array or object to the constructor or use SetDataset(). Typical
 uses would be for _GET and _POST but you could apply it to any named dataset
 that needs looked at. You can also change datasets at will, keeping any
 predefined filters intact.
+
+
+## Another Simple Example:
+
+Lets say we want to dump our POST data back into our form because there was some
+sort of validation error. This is the time where it is very easy to accidentally
+open yourself up to cross-site scripting problems. Input Filter can take care of
+that for you though by defining a default filter that all fields which do not
+have their own special filters for, get run through.
+
+	$data = (new Nether\Input\Filter($_POST))
+	->SetDefaultFunction(function($v){ return htmlspecialchars($v) });
+	
+	// ... some time later...
+	
+	<input type="text" name="Username" value="<?php echo $data->Username ?>" />
+		
 
 #### Creating a new interface.
 Wrap any object or array in the OOP interface.

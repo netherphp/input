@@ -136,4 +136,28 @@ class Filter_Test extends \Codeception\TestCase\Test {
 		return;
 	}
 
+	public function testDefaultFilter() {
+
+		$input = (new Nether\Input\Filter(static::$TestDataGood))
+		->SetDefaultFunction(function($v){ return str_replace('o','0',$v); })
+		->Hostname(function($v){ return str_replace('o','a',$v); });
+
+		(new Verify(
+			'default filter took hold of username',
+			$input->Username
+		))->equals('b0b');
+
+		(new Verify(
+			'default filter took hold of email',
+			$input->Email
+		))->equals('b0b@majdak.net');
+
+		(new Verify(
+			'default filter did not hit hostname, rather the hostname filter did',
+			$input->Hostname
+		))->equals('dankeykang');
+
+		return;
+	}
+
 }

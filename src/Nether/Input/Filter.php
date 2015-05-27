@@ -26,6 +26,13 @@ if you so choose.
 	the input source dataset that we will request.
 	//*/
 
+	protected $DefaultFunction = null;
+	/*//
+	@type callable
+	the default filter that will be applied to all requests that do not have
+	a specific filter set.
+	//*/
+
 	protected $Functions = [];
 	/*//
 	@type array
@@ -71,6 +78,9 @@ if you so choose.
 	the Exists() method if all you care about is that.
 	//*/
 
+		if(!is_array($this->Dataset))
+		throw new Exception('No dataset bound to this filter object yet.');
+
 		$k = $this->PrepareKey($k);
 
 		// return false if we do not even have it.
@@ -80,6 +90,10 @@ if you so choose.
 		// return the value through the filtering method if one was defined.
 		if(array_key_exists($k,$this->Functions))
 		return $this->Functions[$k]($this->Dataset[$k]);
+
+		// return the value through the default filter if one was defined.
+		if(is_callable($this->DefaultFunction))
+		return call_user_func($this->DefaultFunction,$this->Dataset[$k]);
 
 		// return the value in the end.
 		return $this->Dataset[$k];
@@ -145,6 +159,24 @@ if you so choose.
 			throw new Exception('Dataset must be an array or object.');
 		}
 
+		return $this;
+	}
+
+	public function GetDefaultFunction() {
+	/*//
+	@return callable
+	//*/
+
+		return $this->DefaultFunction;
+	}
+
+	public function SetDefaultFunction(callable $func) {
+	/*//
+	@argv callable Function
+	@return $this
+	//*/
+
+		$this->DefaultFunction = $func;
 		return $this;
 	}
 
