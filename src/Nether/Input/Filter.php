@@ -83,20 +83,27 @@ if you so choose.
 
 		$k = $this->PrepareKey($k);
 
-		// return false if we do not even have it.
-		if(!array_key_exists($k,$this->Dataset))
-		return false;
-
 		// return the value through the filtering method if one was defined.
 		if(array_key_exists($k,$this->Functions))
-		return $this->Functions[$k]($this->Dataset[$k]);
+		return $this->Functions[$k](
+			(array_key_exists($k,$this->Dataset))?
+				($this->Dataset[$k]):
+				(false)
+		);
 
 		// return the value through the default filter if one was defined.
 		if(is_callable($this->DefaultFunction))
-		return call_user_func($this->DefaultFunction,$this->Dataset[$k]);
+		return call_user_func(
+			$this->DefaultFunction,
+			(array_key_exists($k,$this->Dataset))?
+				($this->Dataset[$k]):
+				(false)
+		);
 
 		// return the value in the end.
-		return $this->Dataset[$k];
+		return (array_key_exists($k,$this->Dataset))?
+			($this->Dataset[$k]):
+			(false);
 	}
 
 	public function __set($k,$v) {
@@ -123,6 +130,29 @@ if you so choose.
 		$this->Functions[$this->PrepareKey($k)] = $a[0];
 
 		return $this;
+	}
+
+	public function __invoke($i) {
+	/*//
+	@argv array Input
+	@return callable or false
+	allow retrieval of a defined callback via the invoke syntax. returns
+	boolean false if no callback was defined.
+
+	* callable $this('Something');
+
+	to fetch something that was defined as
+
+	* $this->Something(callable);
+
+	//*/
+
+		$i = $this->PrepareKey($i);
+
+		if(array_key_exists($i,$this->Functions))
+		return $this->Functions[$i];
+
+		return false;
 	}
 
 	////////////////
