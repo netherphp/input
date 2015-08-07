@@ -40,11 +40,11 @@ have their own special filters for, get run through.
 
 	$data = (new Nether\Input\Filter($_POST))
 	->SetDefaultFunction(function($v){ return htmlspecialchars($v) });
-	
+
 	// ... some time later...
-	
+
 	<input type="text" name="Username" value="<?php echo $data->Username ?>" />
-		
+
 
 #### Creating a new interface.
 Wrap any object or array in the OOP interface.
@@ -72,6 +72,13 @@ which is the value.
 	$input->MyField(function($t){
 		return str_repalce('a','@',$t);
 	});
+
+#### Retrieve a filter.
+You invoke the object directly, passing it a string that was the name of the field
+you originally defined the callback on. Here is an example reusing an existing
+callback on another field.
+
+	$input->MyOtherField($input('MyField'));
 
 
 ## Installing
