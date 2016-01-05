@@ -20,26 +20,30 @@ if you so choose.
 
 //*/
 
-	protected $Dataset;
+	protected
+	$Dataset = null;
 	/*//
 	@type array
 	the input source dataset that we will request.
 	//*/
 
-	protected $DefaultFunction = null;
+	protected
+	$DefaultFunction = null;
 	/*//
 	@type callable
 	the default filter that will be applied to all requests that do not have
 	a specific filter set.
 	//*/
 
-	protected $Functions = [];
+	protected
+	$Functions = [];
 	/*//
 	@type array
 	the filters that are to be applied.
 	//*/
 
-	protected $Case = false;
+	protected
+	$Case = false;
 	/*//
 	@type bool
 	if this class should be case sensitive on the input keys. by default it is
@@ -50,15 +54,16 @@ if you so choose.
 	////////////////
 	////////////////
 
-	public function __construct($dataset=null,$opt=null) {
-		$opt = new Nether\Object($opt,[
+	public function
+	__Construct($Dataset=null,$Opt=null) {
+		$Opt = new Nether\Object($Opt,[
 			'Case' => false
 		]);
 
-		$this->Case = $opt->Case;
+		$this->Case = $Opt->Case;
 
-		if($dataset !== null)
-		$this->SetDataset($dataset);
+		if($Dataset !== null)
+		$this->SetDataset($Dataset);
 
 		return;
 	}
@@ -66,7 +71,8 @@ if you so choose.
 	////////////////
 	////////////////
 
-	public function __get($k) {
+	public function
+	__Get($Key) {
 	/*//
 	@argv string Key
 	@return mixed|false
@@ -81,58 +87,63 @@ if you so choose.
 		if(!is_array($this->Dataset))
 		throw new Exception('No dataset bound to this filter object yet.');
 
-		$k = $this->PrepareKey($k);
+		$Key = $this->PrepareKey($Key);
 
 		// return the value through the filtering method if one was defined.
-		if(array_key_exists($k,$this->Functions))
-		return $this->Functions[$k](
-			(array_key_exists($k,$this->Dataset))?
-				($this->Dataset[$k]):
-				(false)
+		if(array_key_exists($Key,$this->Functions))
+		return $this->Functions[$Key](
+			(array_key_exists($Key,$this->Dataset))?
+				($this->Dataset[$Key]):
+				(false),
+			$Key
 		);
 
 		// return the value through the default filter if one was defined.
 		if(is_callable($this->DefaultFunction))
 		return call_user_func(
 			$this->DefaultFunction,
-			(array_key_exists($k,$this->Dataset))?
-				($this->Dataset[$k]):
-				(false)
+			(array_key_exists($Key,$this->Dataset))?
+				($this->Dataset[$Key]):
+				(false),
+			$Key
 		);
 
 		// return the value in the end.
-		return (array_key_exists($k,$this->Dataset))?
-			($this->Dataset[$k]):
+		return (array_key_exists($Key,$this->Dataset))?
+			($this->Dataset[$Key]):
 			(false);
 	}
 
-	public function __set($k,$v) {
+	public function
+	__Set($Key,$Val) {
 	/*//
 	@argv string Key, mixed Value
 	@return mixed
 	handle pushing data into the datastore.
 	//*/
 
-		return $this->Dataset[$this->PrepareKey($k)] = $v;
+		return $this->Dataset[$this->PrepareKey($Key)] = $Val;
 	}
 
-	public function __call($k,$a) {
+	public function
+	__Call($Key,$Argv) {
 	/*//
 	@argv string Key, array Args
 	//*/
 
-		if(count($a) !== 1)
+		if(count($Argv) !== 1)
 		throw new Exception('only expecting one argument to define a filter.');
 
-		if(!is_callable($a[0]))
+		if(!is_callable($Argv[0]))
 		throw new Exception('the filter must be callable.');
 
-		$this->Functions[$this->PrepareKey($k)] = $a[0];
+		$this->Functions[$this->PrepareKey($Key)] = $Argv[0];
 
 		return $this;
 	}
 
-	public function __invoke($i) {
+	public function
+	__Invoke($Key) {
 	/*//
 	@argv array Input
 	@return callable or false
@@ -147,10 +158,10 @@ if you so choose.
 
 	//*/
 
-		$i = $this->PrepareKey($i);
+		$Key = $this->PrepareKey($Key);
 
-		if(array_key_exists($i,$this->Functions))
-		return $this->Functions[$i];
+		if(array_key_exists($Key,$this->Functions))
+		return $this->Functions[$Key];
 
 		return false;
 	}
@@ -158,17 +169,19 @@ if you so choose.
 	////////////////
 	////////////////
 
-	public function Exists($k) {
+	public function
+	Exists($Key) {
 	/*//
 	@argv string Key
 	@return bool
 	determine if the specified key exists in the original dataset.
 	//*/
 
-		return array_key_exists($this->PrepareKey($k),$this->Dataset);
+		return array_key_exists($this->PrepareKey($Key),$this->Dataset);
 	}
 
-	public function GetDataset() {
+	public function
+	GetDataset() {
 	/*//
 	@return array
 	//*/
@@ -176,23 +189,25 @@ if you so choose.
 		return $this->Dataset;
 	}
 
-	public function SetDataset($input) {
+	public function
+	SetDataset($Input) {
 	/*//
 	@argv array Input
 	@argv object Input
 	@return $this
 	//*/
 
-		if(is_array($input) || is_object($input)) {
-			$this->Dataset = $this->PrepareDataset((array)$input);
-		} else {
-			throw new Exception('Dataset must be an array or object.');
-		}
+		if(is_array($Input) || is_object($Input))
+		$this->Dataset = $this->PrepareDataset((array)$Input);
+
+		else
+		throw new Exception('Dataset must be an array or object.');
 
 		return $this;
 	}
 
-	public function GetDefaultFunction() {
+	public function
+	GetDefaultFunction() {
 	/*//
 	@return callable
 	//*/
@@ -200,34 +215,39 @@ if you so choose.
 		return $this->DefaultFunction;
 	}
 
-	public function SetDefaultFunction(callable $func) {
+	public function
+	SetDefaultFunction(callable $Func) {
 	/*//
 	@argv callable Function
 	@return $this
 	//*/
 
-		$this->DefaultFunction = $func;
+		$this->DefaultFunction = $Func;
 		return $this;
 	}
 
 	////////////////
 	////////////////
 
-	protected function PrepareKey($k) {
-		if(!$this->Case) return strtolower($k);
-		else return $k;
+	protected function
+	PrepareKey($Key) {
+		if(!$this->Case)
+		return strtolower($Key);
+
+		return $Key;
 	}
 
-	protected function PrepareDataset($data) {
+	protected function
+	PrepareDataset($Data) {
 		if(!$this->Case) {
-			$newdata = [];
+			$New = [];
 
-			foreach((array)$data as $k => $v)
-			$newdata[strtolower($k)] = $v;
+			foreach((array)$Data as $Key => $Val)
+			$New[strtolower($Key)] = $Val;
 
-			return $newdata;
+			return $New;
 		} else {
-			return (array)$data;
+			return (array)$Data;
 		}
 	}
 
