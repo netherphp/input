@@ -121,12 +121,12 @@ class Filter_Test extends \Codeception\TestCase\Test {
 		(new Verify(
 			'that the username failed to equal bob',
 			$input->Username
-		))->false();
+		))->null();
 
 		(new Verify(
 			'that the email was invalid',
 			$input->Email
-		))->false();
+		))->null();
 
 		(new Verify(
 			'that hostname was sanitised as expected',
