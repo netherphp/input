@@ -94,7 +94,7 @@ if you so choose.
 		return $this->Functions[$Key](
 			(array_key_exists($Key,$this->Dataset))?
 				($this->Dataset[$Key]):
-				(false),
+				(null),
 			$Key
 		);
 
@@ -104,14 +104,14 @@ if you so choose.
 			$this->DefaultFunction,
 			(array_key_exists($Key,$this->Dataset))?
 				($this->Dataset[$Key]):
-				(false),
+				(null),
 			$Key
 		);
 
 		// return the value in the end.
 		return (array_key_exists($Key,$this->Dataset))?
 			($this->Dataset[$Key]):
-			(false);
+			(null);
 	}
 
 	public function
