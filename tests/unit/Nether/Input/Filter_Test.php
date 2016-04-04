@@ -87,6 +87,12 @@ class Filter_Test extends \Codeception\TestCase\Test {
 			$input->UsErNaMe
 		))->equals('bob');
 
+		(new Verify(
+			'accessing missing data returns null',
+			$input->HerpDerp
+		))->null();
+
+
 		return;
 	}
 
@@ -121,12 +127,12 @@ class Filter_Test extends \Codeception\TestCase\Test {
 		(new Verify(
 			'that the username failed to equal bob',
 			$input->Username
-		))->null();
+		))->false();
 
 		(new Verify(
 			'that the email was invalid',
 			$input->Email
-		))->null();
+		))->false();
 
 		(new Verify(
 			'that hostname was sanitised as expected',
