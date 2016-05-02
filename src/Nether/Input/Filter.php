@@ -186,6 +186,8 @@ if you so choose.
 	get the draw data without running through input filters.
 	//*/
 
+		$Key = $this->PrepareKey($Key);
+
 		return (array_key_exists($Key,$this->Dataset))?
 			($this->Dataset[$Key]):
 			(null);
