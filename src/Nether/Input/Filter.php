@@ -109,9 +109,7 @@ if you so choose.
 		);
 
 		// return the value in the end.
-		return (array_key_exists($Key,$this->Dataset))?
-			($this->Dataset[$Key]):
-			(null);
+		return $this->Raw($Key);
 	}
 
 	public function
@@ -178,6 +176,19 @@ if you so choose.
 	//*/
 
 		return array_key_exists($this->PrepareKey($Key),$this->Dataset);
+	}
+
+	public function
+	Raw($Key) {
+	/*//
+	@argv string Key
+	@return mixed
+	get the draw data without running through input filters.
+	//*/
+
+		return (array_key_exists($Key,$this->Dataset))?
+			($this->Dataset[$Key]):
+			(null);
 	}
 
 	public function
