@@ -56,7 +56,7 @@ if you so choose.
 
 	public function
 	__Construct($Dataset=null,$Opt=null) {
-		$Opt = new Nether\Object($Opt,[
+		$Opt = new Nether\Object\Mapped($Opt,[
 			'Case' => false
 		]);
 
