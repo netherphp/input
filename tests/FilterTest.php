@@ -106,6 +106,40 @@ extends PHPUnit\Framework\TestCase {
 
 	/** @test */
 	public function
+	TestInputHandleWithFunctionWithArgs() {
+
+		$Input = (new Nether\Input\Filter(['Integer'=>1]))
+		->Integer(
+			function($Val,$Var,$Min=0,$Max=0,$Def=0){
+				return filter_var($Val,FILTER_VALIDATE_INT,['options'=>[
+					'min_range' => $Min,
+					'max_range' => $Max,
+					'default'   => $Def
+				]]);
+			},
+			[ 1, 3, 0 ]
+		);
+
+		$Input->Integer = 1;
+		$this->AssertEquals(1,$Input->Integer);
+
+		$Input->Integer = 2;
+		$this->AssertEquals(2,$Input->Integer);
+
+		$Input->Integer = 3;
+		$this->AssertEquals(3,$Input->Integer);
+
+		$Input->Integer = 4;
+		$this->AssertEquals(0,$Input->Integer);
+
+		$Input->Integer = 'gowron';
+		$this->AssertEquals(0,$Input->Integer);
+
+		return;
+	}
+
+	/** @test */
+	public function
 	TestDefaultFilter() {
 
 		$Input = (new Nether\Input\Filter(static::$TestDataGood))

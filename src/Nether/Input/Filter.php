@@ -43,6 +43,13 @@ if you so choose.
 	//*/
 
 	protected
+	$FunctionArgs = [];
+	/*//
+	@type array
+	optional arguments for filter functions.
+	//*/
+
+	protected
 	$Case = false;
 	/*//
 	@type bool
@@ -88,23 +95,26 @@ if you so choose.
 		throw new Exception('No dataset bound to this filter object yet.');
 
 		$Key = $this->PrepareKey($Key);
+		$Value = array_key_exists($Key,$this->Dataset) ? $this->Dataset[$Key] : NULL;
+		$Args = NULL;
 
 		// return the value through the filtering method if one was defined.
-		if(array_key_exists($Key,$this->Functions))
-		return $this->Functions[$Key](
-			(array_key_exists($Key,$this->Dataset))?
-				($this->Dataset[$Key]):
-				(null),
-			$Key
-		);
+		if(array_key_exists($Key,$this->Functions)) {
+			if(array_key_exists($Key,$this->FunctionArgs))
+			$Args = $this->FunctionArgs[$Key];
+
+			return $this->Functions[$Key](
+				$Value,
+				$Key,
+				...($Args ?? [])
+			);
+		}
 
 		// return the value through the default filter if one was defined.
 		if(is_callable($this->DefaultFunction))
 		return call_user_func(
 			$this->DefaultFunction,
-			(array_key_exists($Key,$this->Dataset))?
-				($this->Dataset[$Key]):
-				(null),
+			$Value,
 			$Key
 		);
 
@@ -129,13 +139,22 @@ if you so choose.
 	@argv string Key, array Args
 	//*/
 
-		if(count($Argv) !== 1)
-		throw new Exception('only expecting one argument to define a filter.');
+		$Key = $this->PrepareKey($Key);
+
+		////////
+
+		if(!count($Argv))
+		throw new Exception('no filter function was defined');
 
 		if(!is_callable($Argv[0]))
 		throw new Exception('the filter must be callable.');
 
-		$this->Functions[$this->PrepareKey($Key)] = $Argv[0];
+		$this->Functions[$Key] = $Argv[0];
+
+		////////
+
+		if(count($Argv) >= 2 && is_array($Argv[1]))
+		$this->FunctionArgs[$Key] = $Argv[1];
 
 		return $this;
 	}
