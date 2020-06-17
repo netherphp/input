@@ -108,8 +108,12 @@ extends PHPUnit\Framework\TestCase {
 	public function
 	TestInputHandleWithFunctionWithArgs() {
 
-		$Input = (new Nether\Input\Filter(['Integer'=>1]))
-		->Integer(
+		$Input = (new Nether\Input\Filter(
+			['Integer'=>1],
+			['Cache'=>FALSE]
+		));
+
+		$Input->Integer(
 			function($Val,$Var,$Min=0,$Max=0,$Def=0){
 				return filter_var($Val,FILTER_VALIDATE_INT,['options'=>[
 					'min_range' => $Min,
@@ -149,6 +153,49 @@ extends PHPUnit\Framework\TestCase {
 		$this->AssertEquals('b0b',$Input->Username,'transformed data through filter');
 		$this->AssertEquals('b0b@majdak.net',$Input->Email,'transformed data through filter');
 		$this->AssertEquals('dankeykang',$Input->Hostname,'transformed data through filter');
+
+		return;
+	}
+
+	/** @test */
+	public function
+	TestResultCache() {
+
+		$Input = (new Nether\Input\Filter(['Integer'=>1]))
+		->Integer(
+			function($Val,$Var,$Min=0,$Max=0,$Def=0){
+				return filter_var($Val,FILTER_VALIDATE_INT,['options'=>[
+					'min_range' => $Min,
+					'max_range' => $Max,
+					'default'   => $Def
+				]]);
+			},
+			[ 1, 3, 0 ]
+		);
+
+		////////
+
+		$Input
+		->SetCache(TRUE)
+		->ClearCache();
+
+		$Input->Integer = 1;
+		$this->AssertEquals(1,$Input->Integer);
+
+		$Input->Integer = 2;
+		$this->AssertEquals(1,$Input->Integer);
+
+		////////
+
+		$Input
+		->SetCache(FALSE)
+		->ClearCache();
+
+		$Input->Integer = 1;
+		$this->AssertEquals(1,$Input->Integer);
+
+		$Input->Integer = 2;
+		$this->AssertEquals(2,$Input->Integer);
 
 		return;
 	}

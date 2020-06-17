@@ -58,18 +58,35 @@ if you so choose.
 	to be all pascal or camel in the server side.
 	//*/
 
+	protected
+	$CacheData = [];
+	/*//
+	@type array
+	data that has been processed before before.
+	//*/
+
+	protected
+	$Cache = TRUE;
+	/*//
+	@type bool
+	if caching is enabled.
+	//*/
+
 	////////////////
 	////////////////
 
 	public function
-	__Construct($Dataset=null,$Opt=null) {
+	__Construct($Dataset=NULL,$Opt=NULL) {
+
 		$Opt = new Nether\Object\Mapped($Opt,[
-			'Case' => false
+			'Case'  => FALSE,
+			'Cache' => TRUE
 		]);
 
 		$this->Case = $Opt->Case;
+		$this->Cache = $Opt->Cache;
 
-		if($Dataset !== null)
+		if($Dataset !== NULL)
 		$this->SetDataset($Dataset);
 
 		return;
@@ -91,19 +108,30 @@ if you so choose.
 	the Exists() method if all you care about is that.
 	//*/
 
+		$Value = NULL;
+		$Args = NULL;
+		$Result = NULL;
+
+		////////
+
 		if(!is_array($this->Dataset))
 		throw new Exception('No dataset bound to this filter object yet.');
 
 		$Key = $this->PrepareKey($Key);
+
+		if($this->Cache && array_key_exists($Key,$this->CacheData))
+		return $this->CacheData[$Key];
+
+		////////
+
 		$Value = array_key_exists($Key,$this->Dataset) ? $this->Dataset[$Key] : NULL;
-		$Args = NULL;
 
 		// return the value through the filtering method if one was defined.
 		if(array_key_exists($Key,$this->Functions)) {
 			if(array_key_exists($Key,$this->FunctionArgs))
 			$Args = $this->FunctionArgs[$Key];
 
-			return $this->Functions[$Key](
+			$Result = $this->Functions[$Key](
 				$Value,
 				$Key,
 				...($Args ?? [])
@@ -111,15 +139,25 @@ if you so choose.
 		}
 
 		// return the value through the default filter if one was defined.
-		if(is_callable($this->DefaultFunction))
-		return call_user_func(
-			$this->DefaultFunction,
-			$Value,
-			$Key
-		);
+		elseif(is_callable($this->DefaultFunction)) {
+			$Result = call_user_func(
+				$this->DefaultFunction,
+				$Value,
+				$Key
+			);
+		}
 
 		// return the value in the end.
-		return $this->Raw($Key);
+		else {
+			$Result = $this->Raw($Key);
+		}
+
+		////////
+
+		if($this->Cache)
+		$this->CacheData[$Key] = $Result;
+
+		return $Result;
 	}
 
 	public function
@@ -229,12 +267,46 @@ if you so choose.
 	@return $this
 	//*/
 
-		if(is_array($Input) || is_object($Input))
-		$this->Dataset = $this->PrepareDataset((array)$Input);
+		if(is_array($Input) || is_object($Input)) {
+			$this->Dataset = $this->PrepareDataset((array)$Input);
+			$this->ClearCache();
+		}
 
 		else
 		throw new Exception('Dataset must be an array or object.');
 
+		return $this;
+	}
+
+	public function
+	GetCache():
+	Bool {
+	/*//
+	@date 2020-06-17
+	//*/
+
+		return $this->Cache;
+	}
+
+	public function
+	SetCache(Bool $Input):
+	self {
+	/*//
+	@date 2020-06-17
+	//*/
+
+		$this->Cache = $Input;
+		return $this;
+	}
+
+	public function
+	ClearCache():
+	self {
+	/*//
+	@date 2020-06-17
+	//*/
+
+		$this->CacheData = [];
 		return $this;
 	}
 
