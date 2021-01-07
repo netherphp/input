@@ -10,6 +10,7 @@
 		  "role":"developer" }
 	],
 	"require": {
+		"php": ">=8.0",
 		"netherphp/object": ">=3.0.0",
 		"netherphp/option": ">=1.0.0"
 	},
