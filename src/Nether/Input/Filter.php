@@ -134,6 +134,7 @@ if you so choose.
 			$Result = $this->Functions[$Key](
 				$Value,
 				$Key,
+				$this,
 				...($Args ?? [])
 			);
 		}
@@ -143,7 +144,8 @@ if you so choose.
 			$Result = call_user_func(
 				$this->DefaultFunction,
 				$Value,
-				$Key
+				$Key,
+				$this
 			);
 		}
 
