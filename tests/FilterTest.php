@@ -114,7 +114,7 @@ extends PHPUnit\Framework\TestCase {
 		));
 
 		$Input->Integer(
-			function($Val,$Var,$Min=0,$Max=0,$Def=0){
+			function($Val, $Var, $API, $Min=0, $Max=0, $Def=0){
 				return filter_var($Val,FILTER_VALIDATE_INT,['options'=>[
 					'min_range' => $Min,
 					'max_range' => $Max,
@@ -163,7 +163,7 @@ extends PHPUnit\Framework\TestCase {
 
 		$Input = (new Nether\Input\Filter(['Integer'=>1]))
 		->Integer(
-			function($Val,$Var,$Min=0,$Max=0,$Def=0){
+			function($Val, $Var, $API, $Min=0, $Max=0, $Def=0){
 				return filter_var($Val,FILTER_VALIDATE_INT,['options'=>[
 					'min_range' => $Min,
 					'max_range' => $Max,
