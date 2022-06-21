@@ -1,8 +1,9 @@
 <?php
 
 namespace Nether\Input;
-use \Nether;
-use \Exception;
+
+use Nether;
+use Exception;
 
 class Filter {
 /*//
@@ -20,55 +21,48 @@ if you so choose.
 
 //*/
 
-	protected
-	$Dataset = null;
+	protected ?array
+	$Dataset = NULL;
 	/*//
-	@type array
 	the input source dataset that we will request.
 	//*/
 
-	protected
-	$DefaultFunction = null;
+	protected mixed
+	$DefaultFunction = NULL;
 	/*//
-	@type callable
 	the default filter that will be applied to all requests that do not have
 	a specific filter set.
 	//*/
 
-	protected
+	protected array
 	$Functions = [];
 	/*//
-	@type array
 	the filters that are to be applied.
 	//*/
 
-	protected
+	protected array
 	$FunctionArgs = [];
 	/*//
-	@type array
 	optional arguments for filter functions.
 	//*/
 
-	protected
-	$Case = false;
+	protected bool
+	$Case = FALSE;
 	/*//
-	@type bool
 	if this class should be case sensitive on the input keys. by default it is
 	false because we often create html url variables with lowercase but want
 	to be all pascal or camel in the server side.
 	//*/
 
-	protected
+	protected array
 	$CacheData = [];
 	/*//
-	@type array
 	data that has been processed before before.
 	//*/
 
-	protected
+	protected bool
 	$Cache = TRUE;
 	/*//
-	@type bool
 	if caching is enabled.
 	//*/
 
@@ -220,7 +214,7 @@ if you so choose.
 		if(array_key_exists($Key,$this->Functions))
 		return $this->Functions[$Key];
 
-		return false;
+		return FALSE;
 	}
 
 	////////////////
@@ -249,7 +243,7 @@ if you so choose.
 
 		return (array_key_exists($Key,$this->Dataset))?
 			($this->Dataset[$Key]):
-			(null);
+			(NULL);
 	}
 
 	public function
@@ -282,7 +276,7 @@ if you so choose.
 
 	public function
 	GetCache():
-	Bool {
+	bool {
 	/*//
 	@date 2020-06-17
 	//*/
@@ -291,7 +285,7 @@ if you so choose.
 	}
 
 	public function
-	SetCache(Bool $Input):
+	SetCache(bool $Input):
 	self {
 	/*//
 	@date 2020-06-17
@@ -329,6 +323,22 @@ if you so choose.
 	//*/
 
 		$this->DefaultFunction = $Func;
+		return $this;
+	}
+
+	public function
+	BindByArray(array $Input):
+	static {
+	/*//
+	@date 2022-06-20
+	//*/
+
+		$Key = NULL;
+		$Value = NULL;
+
+		foreach($Input as $Key => $Value)
+		$this->{$Key}($Value);
+
 		return $this;
 	}
 

@@ -1,13 +1,13 @@
 {
 	"name":"netherphp/input",
 	"description":"Input Handling.",
-	"keywords":["php","input","filter","sanitisation"],
+	"keywords":[ "php", "input", "filter", "sanitisation" ],
 	"license":"BSD-2-Clause",
 	"authors":[
-		{ "name":"Bob Majdak Jr",
-		  "email":"bob@nether.io",
-		  "homepage":"http://nether.io",
-		  "role":"developer" }
+		{ "name": "Bob Majdak Jr",
+		  "email": "bob@pegasusgate.net",
+		  "homepage": "http://pegasusgate.net/+bob",
+		  "role": "developer" }
 	],
 	"require": {
 		"php": ">=8.0",
